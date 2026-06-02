@@ -39,7 +39,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="Vuelve a tu Casa"
                 width={32}
                 height={32}

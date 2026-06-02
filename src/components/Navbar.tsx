@@ -33,7 +33,7 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt="Vuelve a tu Casa"
               width={36}
               height={36}
