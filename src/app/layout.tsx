@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VuelveACasa — Encuentra a tu mascota perdida",
+  title: "Vuelve a tu Casa — Encuentra a tu mascota perdida",
   description:
     "La red colaborativa para encontrar mascotas perdidas mediante comunidad, geolocalizacion e inteligencia colectiva. Reporta, busca y reencuentra.",
   keywords: [
@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     "buscar mascota",
     "encontrar mascota",
     "reencuentro animal",
+    "vuelve a tu casa",
   ],
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { motion, type Variants } from "framer-motion";
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -8,55 +8,49 @@ interface AnimatedSectionProps {
   delay?: number;
 }
 
-function useScrollReveal(threshold = 0.05) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+const sectionVariants: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.1, 0.25, 1],
+      delay,
+    },
+  }),
+};
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
-
-  return { ref, visible };
-}
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.1, 0.25, 1],
+      delay,
+    },
+  }),
+};
 
 export function AnimatedSection({
   children,
   className = "",
   delay = 0,
 }: AnimatedSectionProps) {
-  const { ref, visible } = useScrollReveal();
-
   return (
-    <div
-      ref={ref}
+    <motion.div
       className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(40px)",
-        transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`,
-      }}
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.05 }}
+      custom={delay}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -65,21 +59,16 @@ export function AnimatedCard({
   className = "",
   delay = 0,
 }: AnimatedSectionProps) {
-  const { ref, visible } = useScrollReveal();
-
   return (
-    <div
-      ref={ref}
+    <motion.div
       className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible
-          ? "translateY(0) scale(1)"
-          : "translateY(30px) scale(0.97)",
-        transition: `opacity 0.5s ease ${delay}s, transform 0.5s ease ${delay}s`,
-      }}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.05 }}
+      custom={delay}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

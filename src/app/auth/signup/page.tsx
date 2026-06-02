@@ -79,7 +79,7 @@ export default function SignupPage() {
             <PawPrint className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Crea tu cuenta</h1>
-          <p className="text-gray-500 mt-1 text-sm">Únete a la comunidad VuelveACasa</p>
+          <p className="text-gray-500 mt-1 text-sm">Unete a la comunidad Vuelve a tu Casa</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">

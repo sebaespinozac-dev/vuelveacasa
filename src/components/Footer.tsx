@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PawPrint, Heart } from "lucide-react";
+import Image from "next/image";
+import { Heart } from "lucide-react";
 
 const footerSections = [
   {
@@ -36,12 +37,16 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-xl bg-petrol flex items-center justify-center">
-                <PawPrint className="w-4 h-4 text-white" />
-              </div>
+            <Link href="/" className="flex items-center gap-2.5 mb-4">
+              <Image
+                src="/logo.svg"
+                alt="Vuelve a tu Casa"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
               <span className="text-base font-semibold tracking-tight">
-                Vuelve<span className="text-petrol">ACasa</span>
+                Vuelve <span className="text-petrol">a tu Casa</span>
               </span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
@@ -74,7 +79,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col items-center gap-4">
           <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
             <p className="text-xs text-gray-400">
-              &copy; {new Date().getFullYear()} VuelveACasa. Todos los derechos
+              &copy; {new Date().getFullYear()} Vuelve a tu Casa. Todos los derechos
               reservados.
             </p>
             <p className="text-xs text-gray-400 flex items-center gap-1">

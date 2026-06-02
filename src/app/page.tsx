@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   Search,
   MapPin,
@@ -16,12 +18,36 @@ import {
   Smartphone,
   PawPrint,
   Clock,
-  MessageCircle,
 } from "lucide-react";
 import { AnimatedSection, AnimatedCard } from "@/components/AnimatedSection";
 import { Counter } from "@/components/Counter";
 import { PetCard } from "@/components/PetCard";
 import { mockPets, successStories, stats } from "@/lib/mock-data";
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as const, delay: 0.3 },
+  },
+};
 
 export default function Home() {
   return (
@@ -35,23 +61,27 @@ export default function Home() {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-16">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="animate-[fadeInLeft_0.8s_ease_forwards]">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-petrol/10 text-sm text-petrol font-medium mb-6 backdrop-blur-sm">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-petrol/10 text-sm text-petrol font-medium mb-6 backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-hope animate-pulse" />
                 2.847 mascotas reunidas con sus familias
-              </div>
+              </motion.div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.1] text-balance mb-6">
+              <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.1] text-balance mb-6">
                 Porque cada mascota merece{" "}
                 <span className="text-petrol">volver a casa</span>
-              </h1>
+              </motion.h1>
 
-              <p className="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-lg mb-8">
+              <motion.p variants={fadeUp} className="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-lg mb-8">
                 La red colaborativa para encontrar mascotas perdidas mediante
                 comunidad, geolocalizacion e inteligencia colectiva.
-              </p>
+              </motion.p>
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/buscar"
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-base font-semibold text-white bg-petrol rounded-2xl hover:bg-petrol-dark transition-all shadow-lg shadow-petrol/20 hover:shadow-xl hover:shadow-petrol/30 hover:-translate-y-0.5"
@@ -66,9 +96,9 @@ export default function Home() {
                   <PawPrint className="w-5 h-5" />
                   Reportar mascota perdida
                 </Link>
-              </div>
+              </motion.div>
 
-              <div className="flex items-center gap-6 mt-10">
+              <motion.div variants={fadeUp} className="flex items-center gap-6 mt-10">
                 <div className="flex -space-x-3">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div
@@ -89,10 +119,15 @@ export default function Home() {
                     Comunidad creciendo cada dia
                   </p>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
-            <div className="relative animate-[fadeInRight_0.8s_ease_0.2s_forwards]" style={{ opacity: 0 }}>
+            <motion.div
+              className="relative"
+              variants={fadeRight}
+              initial="hidden"
+              animate="visible"
+            >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-petrol/10 aspect-[4/3]">
                 <div
                   className="w-full h-full bg-cover bg-center"
@@ -119,7 +154,11 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="absolute -top-4 -right-4 glass rounded-2xl p-3 shadow-lg animate-float">
+              <motion.div
+                className="absolute -top-4 -right-4 glass rounded-2xl p-3 shadow-lg"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-warm/20 flex items-center justify-center">
                     <Bell className="w-4 h-4 text-warm" />
@@ -131,9 +170,13 @@ export default function Home() {
                     <p className="text-[10px] text-gray-500">Hace 2 min</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="absolute -bottom-4 -left-4 glass rounded-2xl p-3 shadow-lg animate-float" style={{ animationDelay: '1s', animationDuration: '5s' }}>
+              <motion.div
+                className="absolute -bottom-4 -left-4 glass rounded-2xl p-3 shadow-lg"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              >
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-petrol/10 flex items-center justify-center">
                     <MapPin className="w-4 h-4 text-petrol" />
@@ -145,8 +188,8 @@ export default function Home() {
                     <p className="text-[10px] text-gray-500">En tu zona</p>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -175,7 +218,7 @@ export default function Home() {
               Facil y rapido
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 text-balance">
-              Como funciona VuelveACasa
+              Como funciona Vuelve a tu Casa
             </h2>
             <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
               Tres pasos simples para comenzar la busqueda de tu mascota
@@ -442,7 +485,6 @@ export default function Home() {
                       </p>
                     </div>
                   </div>
-                  {/* Map pins simulation */}
                   {[
                     { top: "20%", left: "30%", color: "bg-red-500" },
                     { top: "45%", left: "60%", color: "bg-red-500" },
@@ -547,7 +589,7 @@ export default function Home() {
           <div className="space-y-4">
             {[
               {
-                q: "Es gratis usar VuelveACasa?",
+                q: "Es gratis usar Vuelve a tu Casa?",
                 a: "Si, completamente. Publicar reportes, buscar mascotas y reportar avistamientos es 100% gratuito para toda la comunidad.",
               },
               {
@@ -559,12 +601,12 @@ export default function Home() {
                 a: "Para publicar un reporte de mascota perdida necesitas verificar tu perfil con RUT. Esto protege a las mascotas y genera confianza en la comunidad.",
               },
               {
-                q: "Puedo usar VuelveACasa desde el celular?",
+                q: "Puedo usar Vuelve a tu Casa desde el celular?",
                 a: "Si, la plataforma esta disenada mobile-first. Funciona perfectamente desde cualquier smartphone sin necesidad de descargar una app.",
               },
               {
                 q: "En que ciudades esta disponible?",
-                a: "VuelveACasa esta disponible en todo Chile y pronto en mas paises de Latinoamerica. La comunidad crece cada dia.",
+                a: "Vuelve a tu Casa esta disponible en todo Chile y pronto en mas paises de Latinoamerica. La comunidad crece cada dia.",
               },
             ].map((item, i) => (
               <AnimatedCard key={i} delay={i * 0.08}>

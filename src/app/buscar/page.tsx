@@ -1,26 +1,78 @@
 "use client";
 
-import { useState } from "react";
-import { Search, SlidersHorizontal, MapPin, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, SlidersHorizontal, MapPin, X, Loader2 } from "lucide-react";
 import { PetCard } from "@/components/PetCard";
+import { type Pet as CardPet } from "@/components/PetCard";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { mockPets } from "@/lib/mock-data";
+import { supabase, type Pet as DbPet } from "@/lib/supabase";
 
-const species = ["Todos", "Perro", "Gato", "Ave", "Otro"];
-const statuses = [
+const speciesOptions = ["Todos", "Perro", "Gato", "Ave", "Otro"];
+const statusOptions = [
   { value: "all", label: "Todos" },
   { value: "lost", label: "Perdidos" },
   { value: "found", label: "Encontrados" },
   { value: "reunited", label: "Reunidos" },
 ];
 
+function timeAgo(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffHours < 1) return "Hace menos de 1 hora";
+  if (diffHours < 24) return `Hace ${diffHours} horas`;
+  if (diffDays === 1) return "Hace 1 dia";
+  if (diffDays < 7) return `Hace ${diffDays} dias`;
+  if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semanas`;
+  return date.toLocaleDateString("es-CL");
+}
+
+function dbPetToCard(p: DbPet): CardPet {
+  return {
+    id: p.id,
+    name: p.name,
+    species: p.species,
+    breed: p.breed || "",
+    color: p.color || "",
+    status: p.status,
+    location: p.location || "",
+    date: timeAgo(new Date(p.created_at)),
+    image: p.photo_url || "",
+    sightings: 0,
+    reward: p.reward ?? undefined,
+    contactName: p.contact_name ?? undefined,
+    contactPhone: p.contact_phone ?? undefined,
+  };
+}
+
 export default function BuscarPage() {
   const [query, setQuery] = useState("");
   const [selectedSpecies, setSelectedSpecies] = useState("Todos");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [locationFilter, setLocationFilter] = useState("");
+  const [allPets, setAllPets] = useState<CardPet[]>(mockPets);
+  const [loadingData, setLoadingData] = useState(true);
 
-  const filtered = mockPets.filter((pet) => {
+  useEffect(() => {
+    supabase
+      .from("pets")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          const dbCards = (data as DbPet[]).map(dbPetToCard);
+          const dbIds = new Set(dbCards.map((p) => p.id));
+          const uniqueMock = mockPets.filter((p) => !dbIds.has(p.id));
+          setAllPets([...dbCards, ...uniqueMock]);
+        }
+        setLoadingData(false);
+      });
+  }, []);
+
+  const filtered = allPets.filter((pet) => {
     const matchesQuery =
       !query ||
       pet.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -30,8 +82,16 @@ export default function BuscarPage() {
       selectedSpecies === "Todos" || pet.species === selectedSpecies;
     const matchesStatus =
       selectedStatus === "all" || pet.status === selectedStatus;
-    return matchesQuery && matchesSpecies && matchesStatus;
+    const matchesLocation =
+      !locationFilter ||
+      pet.location.toLowerCase().includes(locationFilter.toLowerCase());
+    return matchesQuery && matchesSpecies && matchesStatus && matchesLocation;
   });
+
+  const activeFilters =
+    (selectedSpecies !== "Todos" ? 1 : 0) +
+    (selectedStatus !== "all" ? 1 : 0) +
+    (locationFilter ? 1 : 0);
 
   return (
     <div className="pt-24 pb-16 min-h-screen bg-gray-50">
@@ -68,7 +128,7 @@ export default function BuscarPage() {
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl border text-sm font-medium transition-all ${
+              className={`flex items-center gap-2 px-5 py-3.5 rounded-2xl border text-sm font-medium transition-all relative ${
                 showFilters
                   ? "bg-petrol text-white border-petrol"
                   : "bg-white text-gray-700 border-gray-200 hover:border-petrol/30"
@@ -76,6 +136,11 @@ export default function BuscarPage() {
             >
               <SlidersHorizontal className="w-4 h-4" />
               Filtros
+              {activeFilters > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-warm text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {activeFilters}
+                </span>
+              )}
             </button>
           </div>
         </AnimatedSection>
@@ -84,12 +149,27 @@ export default function BuscarPage() {
         {showFilters && (
           <AnimatedSection className="mb-8">
             <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-gray-900">Filtros</h3>
+                {activeFilters > 0 && (
+                  <button
+                    onClick={() => {
+                      setSelectedSpecies("Todos");
+                      setSelectedStatus("all");
+                      setLocationFilter("");
+                    }}
+                    className="text-xs font-medium text-petrol hover:text-petrol-dark transition-colors"
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Especie
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {species.map((s) => (
+                  {speciesOptions.map((s) => (
                     <button
                       key={s}
                       onClick={() => setSelectedSpecies(s)}
@@ -109,7 +189,7 @@ export default function BuscarPage() {
                   Estado
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {statuses.map((s) => (
+                  {statusOptions.map((s) => (
                     <button
                       key={s.value}
                       onClick={() => setSelectedStatus(s.value)}
@@ -132,6 +212,8 @@ export default function BuscarPage() {
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
+                    value={locationFilter}
+                    onChange={(e) => setLocationFilter(e.target.value)}
                     placeholder="Ciudad o comuna..."
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-petrol/20 focus:border-petrol transition-all placeholder:text-gray-400"
                   />
@@ -144,7 +226,14 @@ export default function BuscarPage() {
         {/* Results */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm text-gray-500">
-            {filtered.length} resultado{filtered.length !== 1 ? "s" : ""}
+            {loadingData ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Cargando...
+              </span>
+            ) : (
+              `${filtered.length} resultado${filtered.length !== 1 ? "s" : ""}`
+            )}
           </p>
         </div>
 

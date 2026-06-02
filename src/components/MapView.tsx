@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { mapPets, type MapPet } from "@/lib/map-data";
+import { type MapPet } from "@/lib/map-data";
 
 const statusColors = {
   lost: "#ef4444",
@@ -47,16 +47,18 @@ function FlyToSelected({ pet }: { pet: MapPet | null }) {
 }
 
 interface MapViewProps {
+  pets: MapPet[];
   selectedPetId: string | null;
   onSelectPet: (id: string) => void;
 }
 
-export default function MapView({ selectedPetId, onSelectPet }: MapViewProps) {
-  const selectedPet = mapPets.find((p) => p.id === selectedPetId) ?? null;
+export default function MapView({ pets, selectedPetId, onSelectPet }: MapViewProps) {
+  const selectedPet = pets.find((p) => p.id === selectedPetId) ?? null;
+  const center: [number, number] = pets.length > 0 ? [pets[0].lat, pets[0].lng] : [-33.45, -70.6];
 
   return (
     <MapContainer
-      center={[-33.45, -70.6]}
+      center={center}
       zoom={12}
       style={{ height: "100%", width: "100%" }}
       zoomControl={false}
@@ -66,7 +68,7 @@ export default function MapView({ selectedPetId, onSelectPet }: MapViewProps) {
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       />
       <FlyToSelected pet={selectedPet} />
-      {mapPets.map((pet) => (
+      {pets.map((pet) => (
         <Marker
           key={pet.id}
           position={[pet.lat, pet.lng]}
@@ -82,6 +84,7 @@ export default function MapView({ selectedPetId, onSelectPet }: MapViewProps) {
                   src={pet.image}
                   alt={pet.name}
                   style={{ width: 48, height: 48, borderRadius: 10, objectFit: "cover" }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=200&fit=crop"; }}
                 />
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14, color: "#1f2937" }}>
