@@ -1,0 +1,133 @@
+export interface MapPet {
+  id: string;
+  name: string;
+  species: string;
+  breed: string;
+  status: "lost" | "found" | "reunited";
+  location: string;
+  lat: number;
+  lng: number;
+  image: string;
+  date: string;
+  sightings: number;
+}
+
+export const mapPets: MapPet[] = [
+  {
+    id: "loki",
+    name: "Loki",
+    species: "Perro",
+    breed: "Poodle",
+    status: "lost",
+    location: "Norte de Antofagasta",
+    lat: -23.575,
+    lng: -70.408,
+    image: "/pets/loki.jpg",
+    date: "Hace 1 dia",
+    sightings: 0,
+  },
+  {
+    id: "balu",
+    name: "Balú",
+    species: "Perro",
+    breed: "Poodle mestizo",
+    status: "lost",
+    location: "Antofagasta centro",
+    lat: -23.648,
+    lng: -70.396,
+    image: "/pets/balu.jpg",
+    date: "Hace 2 dias",
+    sightings: 1,
+  },
+  {
+    id: "koky",
+    name: "Koky",
+    species: "Perro",
+    breed: "Bulldog Inglés",
+    status: "lost",
+    location: "Antofagasta sur",
+    lat: -23.695,
+    lng: -70.410,
+    image: "/pets/koky.jpg",
+    date: "Hace 3 dias",
+    sightings: 2,
+  },
+  {
+    id: "1",
+    name: "Luna",
+    species: "Perro",
+    breed: "Golden Retriever",
+    status: "lost",
+    location: "Providencia, Santiago",
+    lat: -33.425,
+    lng: -70.61,
+    image: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=200&fit=crop",
+    date: "Hace 2 dias",
+    sightings: 3,
+  },
+  {
+    id: "2",
+    name: "Michi",
+    species: "Gato",
+    breed: "Siames",
+    status: "found",
+    location: "Nunoa, Santiago",
+    lat: -33.456,
+    lng: -70.595,
+    image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=200&h=200&fit=crop",
+    date: "Hace 5 horas",
+    sightings: 1,
+  },
+  {
+    id: "3",
+    name: "Rocky",
+    species: "Perro",
+    breed: "Bulldog Frances",
+    status: "lost",
+    location: "Las Condes, Santiago",
+    lat: -33.408,
+    lng: -70.567,
+    image: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=200&h=200&fit=crop",
+    date: "Hace 1 dia",
+    sightings: 7,
+  },
+  {
+    id: "4",
+    name: "Canela",
+    species: "Perro",
+    breed: "Mestizo",
+    status: "reunited",
+    location: "Vitacura, Santiago",
+    lat: -33.393,
+    lng: -70.578,
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop",
+    date: "Hace 3 dias",
+    sightings: 12,
+  },
+  {
+    id: "5",
+    name: "Simba",
+    species: "Gato",
+    breed: "Naranja domestico",
+    status: "lost",
+    location: "La Florida, Santiago",
+    lat: -33.517,
+    lng: -70.588,
+    image: "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=200&h=200&fit=crop",
+    date: "Hace 6 horas",
+    sightings: 2,
+  },
+  {
+    id: "6",
+    name: "Kiwi",
+    species: "Ave",
+    breed: "Canario",
+    status: "lost",
+    location: "Macul, Santiago",
+    lat: -33.489,
+    lng: -70.599,
+    image: "https://images.unsplash.com/photo-1522858547137-f1dcec554f55?w=200&h=200&fit=crop",
+    date: "Hace 1 semana",
+    sightings: 0,
+  },
+];
